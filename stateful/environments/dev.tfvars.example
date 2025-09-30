@@ -1,0 +1,13 @@
+# Development environment configuration for stateful infrastructure
+# Copy this file to dev.tfvars and customize as needed
+
+project_name = "fp-aws-serverless-sample-1"
+environment  = "dev"
+region       = "us-east-1"
+
+tags = {
+  Project     = "fp-aws-serverless-sample-1"
+  Environment = "dev"
+  ManagedBy   = "terraform"
+  Layer       = "stateful"
+}

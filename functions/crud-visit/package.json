@@ -1,0 +1,12 @@
+{
+  "name": "crud-visit",
+  "version": "1.0.0",
+  "description": "Lambda for visit CRUD",
+  "main": "index.js",
+  "license": "MIT",
+  "private": true,
+  "type": "commonjs",
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.632.0"
+  }
+}

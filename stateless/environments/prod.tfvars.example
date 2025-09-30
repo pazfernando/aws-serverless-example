@@ -1,0 +1,18 @@
+# Production environment configuration for stateless infrastructure
+# Copy this file to prod.tfvars and customize as needed
+
+project_name         = "fp-aws-serverless-sample-1"
+environment          = "prod"
+region               = "us-east-1"
+remote_state_bucket  = "fp-aws-serverless-sample-1-tf-state"
+
+# Use specific domains in production
+cors_allow_origins = ["https://yourdomain.com", "https://www.yourdomain.com"]
+
+tags = {
+  Project     = "fp-aws-serverless-sample-1"
+  Environment = "prod"
+  ManagedBy   = "terraform"
+  Layer       = "stateless"
+  CostCenter  = "your-cost-center"
+}

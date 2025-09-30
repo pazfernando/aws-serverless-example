@@ -1,0 +1,16 @@
+# Development environment configuration for stateless infrastructure
+# Copy this file to dev.tfvars and customize as needed
+
+project_name         = "fp-aws-serverless-sample-1"
+environment          = "dev"
+region               = "us-east-1"
+remote_state_bucket  = "fp-aws-serverless-sample-1-tf-state"
+
+cors_allow_origins = ["*"]
+
+tags = {
+  Project     = "fp-aws-serverless-sample-1"
+  Environment = "dev"
+  ManagedBy   = "terraform"
+  Layer       = "stateless"
+}

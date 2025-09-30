@@ -1,0 +1,14 @@
+# Production environment configuration for stateful infrastructure
+# Copy this file to prod.tfvars and customize as needed
+
+project_name = "fp-aws-serverless-sample-1"
+environment  = "prod"
+region       = "us-east-1"
+
+tags = {
+  Project     = "fp-aws-serverless-sample-1"
+  Environment = "prod"
+  ManagedBy   = "terraform"
+  Layer       = "stateful"
+  CostCenter  = "your-cost-center"
+}

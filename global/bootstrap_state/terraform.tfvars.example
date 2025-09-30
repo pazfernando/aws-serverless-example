@@ -1,0 +1,17 @@
+# Example Terraform variables for bootstrap state (stateful)
+# Copy this file to terraform.tfvars and customize the values
+
+# Project name - used as prefix for S3 bucket and DynamoDB table
+project_name = "fp-aws-serverless-sample-1"
+
+# AWS region where state resources will be created
+region = "us-east-1"
+
+# Tags to apply to state management resources
+tags = {
+  Project     = "fp-aws-serverless-sample-1"
+  Environment = "global"
+  ManagedBy   = "terraform"
+  Purpose     = "terraform-state"
+  Owner       = "your-team-name"
+}
