@@ -45,19 +45,36 @@ var.region
  * @returns {Object} Terraform outputs
  */
 function getTerraformOutputs() {
-  const envPath = path.join(__dirname, '..', 'stateful');
-  
+  const statefulPath = path.join(__dirname, '..', 'stateful');
+  const statelessPath = path.join(__dirname, '..', 'stateless');
+
+  let stateful = {};
+  let stateless = {};
+
   try {
-    const result = execSync('terraform output -json', {
-      cwd: envPath,
+    const statefulOut = execSync('terraform output -json', {
+      cwd: statefulPath,
       encoding: 'utf-8',
       stdio: ['pipe', 'pipe', 'pipe']
     });
-    
-    return JSON.parse(result);
+    stateful = JSON.parse(statefulOut);
   } catch (error) {
-    throw new Error(`Failed to get Terraform outputs: ${error.message}`);
+    console.warn(`Warning: Could not read stateful outputs: ${error.message}`);
   }
+
+  try {
+    const statelessOut = execSync('terraform output -json', {
+      cwd: statelessPath,
+      encoding: 'utf-8',
+      stdio: ['pipe', 'pipe', 'pipe']
+    });
+    stateless = JSON.parse(statelessOut);
+  } catch (error) {
+    console.warn(`Warning: Could not read stateless outputs: ${error.message}`);
+  }
+
+  // Merge with stateless taking precedence for overlapping keys
+  return { ...stateful, ...stateless };
 }
 
 module.exports = {

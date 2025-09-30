@@ -122,13 +122,9 @@ async function runTests() {
   // Test 4: Validate Terraform configuration
   log('\nTest 4: Validating Terraform configuration...', colors.yellow);
   
-  // Clean existing .terraform directories to avoid backend issues
-  runCommand('rm -rf .terraform', statefulPath);
-  runCommand('rm -rf .terraform', statelessPath);
-  
   // Validate stateful (skip backend initialization)
-  const tfInitStateful = runCommand('terraform init -backend=false', statefulPath);
-  const tfInitStateless = runCommand('terraform init -backend=false', statelessPath);
+  const tfInitStateful = runCommand('terraform init -backend=false -reconfigure', statefulPath);
+  const tfInitStateless = runCommand('terraform init -backend=false -reconfigure', statelessPath);
   
   let configValid = true;
   if (tfInitStateful.success && tfInitStateless.success) {

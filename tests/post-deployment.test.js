@@ -46,6 +46,7 @@ async function testApiEndpoint(apiEndpoint) {
       timeout: 10000
     });
     
+    console.log(response)
     if (response.status === 200 && response.data.status === 'ok') {
       log('✓ API Gateway health check passed', colors.green);
       console.log(`  Status: ${response.status}`);
