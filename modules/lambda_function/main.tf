@@ -112,6 +112,7 @@ resource "aws_lambda_function" "this" {
     mode = "Active"
   }
 
+  layers = var.layers
+
   tags = var.tags
 }
-

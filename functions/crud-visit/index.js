@@ -1,7 +1,29 @@
+// handler.js
+require('./otel-init'); // debe ser la primera línea
+
 exports.handler = async (event, context) => {
   const start = Date.now();
   const method = event?.requestContext?.http?.method || 'GET';
   const path = event?.rawPath || '/';
+
+  // Configurable latency injection via env vars
+  const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
+  const envInt = (name, def = 0) => {
+    const v = parseInt(process.env[name] ?? '');
+    return Number.isFinite(v) ? v : def;
+  };
+  const postPct = envInt('INJECT_LATENCY_POST_PCT', 0);
+  const postMs  = envInt('INJECT_LATENCY_POST_MS', 0);
+  const getPct  = envInt('INJECT_LATENCY_GET_PCT', 0);
+  const getMs   = envInt('INJECT_LATENCY_GET_MS', 0);
+  const maybeDelay = async (pct, ms, tag) => {
+    if (pct > 0 && ms > 0) {
+      const r = Math.random() * 100;
+      if (r < pct) {
+        await sleep(ms);
+      }
+    }
+  };
 
   // Extract trace info from Lambda/X-Ray environment
   // Example: Root=1-5f84c7a3-3c7c8c9b8d6a2f6d1e2f3a4b;Parent=53995c3f42cd8ad8;Sampled=1
@@ -55,6 +77,9 @@ exports.handler = async (event, context) => {
       log('debug', 'visit created', { body });
       const id = body.id || `${Date.now()}`;
 
+      // Optional latency injection for POST /visit
+      await maybeDelay(postPct, postMs, 'post');
+
       await ddb.send(new PutItemCommand({
         TableName: tableName,
         Item: {
@@ -69,6 +94,8 @@ exports.handler = async (event, context) => {
 
     if (method === 'GET' && path.startsWith('/visit/')) {
       const id = path.split('/').pop();
+      // Optional latency injection for GET /visit/:id
+      await maybeDelay(getPct, getMs, 'get');
       const res = await ddb.send(new GetItemCommand({
         TableName: tableName,
         Key: { id: { S: id } }

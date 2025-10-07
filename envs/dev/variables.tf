@@ -20,3 +20,24 @@ variable "cors_allow_origins" {
   type    = list(string)
   default = ["*"]
 }
+
+# Latency injection controls for dev
+variable "inject_latency_post_pct" {
+  type    = number
+  default = 0
+}
+
+variable "inject_latency_post_ms" {
+  type    = number
+  default = 0
+}
+
+variable "inject_latency_get_pct" {
+  type    = number
+  default = 0
+}
+
+variable "inject_latency_get_ms" {
+  type    = number
+  default = 0
+}

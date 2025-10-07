@@ -34,3 +34,28 @@ variable "tags" {
   description = "Tags to apply to all resources"
   default     = {}
 }
+
+# Latency injection controls
+variable "inject_latency_post_pct" {
+  type        = number
+  description = "Percentage (0-100) of POST /visit requests that should be delayed"
+  default     = 0
+}
+
+variable "inject_latency_post_ms" {
+  type        = number
+  description = "Delay in milliseconds to inject for POST /visit when applied"
+  default     = 0
+}
+
+variable "inject_latency_get_pct" {
+  type        = number
+  description = "Percentage (0-100) of GET /visit/:id requests that should be delayed"
+  default     = 0
+}
+
+variable "inject_latency_get_ms" {
+  type        = number
+  description = "Delay in milliseconds to inject for GET /visit/:id when applied"
+  default     = 0
+}

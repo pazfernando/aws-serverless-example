@@ -49,3 +49,8 @@ variable "enable_dynamodb_access" {
   type    = bool
   default = false
 }
+
+variable "layers" {
+  type    = list(string)
+  default = []
+}

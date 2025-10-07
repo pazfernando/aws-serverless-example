@@ -23,10 +23,22 @@ module "crud_lambda" {
   handler            = "index.handler"
   environment        = {
     TABLE_NAME = data.terraform_remote_state.stateful.outputs.dynamodb_table_name
-    REGION     = var.region
+    REGION     = var.region,
+    INJECT_LATENCY_POST_PCT = tostring(var.inject_latency_post_pct)
+    INJECT_LATENCY_POST_MS  = tostring(var.inject_latency_post_ms)
+    INJECT_LATENCY_GET_PCT  = tostring(var.inject_latency_get_pct)
+    INJECT_LATENCY_GET_MS   = tostring(var.inject_latency_get_ms)
+    AWS_LAMBDA_EXEC_WRAPPER     = "/opt/otel-instrument"
+    OTEL_TRACES_EXPORTER        = "otlp"
+    OTEL_EXPORTER_OTLP_PROTOCOL = "grpc"
+    OTEL_EXPORTER_OTLP_ENDPOINT = "http://127.0.0.1:4317"
+    OTEL_PROPAGATORS            = "xray"
   }
   dynamodb_table_arn = data.terraform_remote_state.stateful.outputs.dynamodb_table_arn
   enable_dynamodb_access = true
+  layers            = [
+    "arn:aws:lambda:us-east-1:615299751070:layer:AWSOpenTelemetryDistroJs:9"
+  ]
   tags               = var.tags
 }
 
