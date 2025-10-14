@@ -41,3 +41,12 @@ resource "aws_s3_bucket_logging" "this" {
   target_bucket = var.logging_bucket_name
   target_prefix = "s3/${var.bucket_name}/"
 }
+
+# Deploy a simple health check page into the bucket
+resource "aws_s3_object" "health" {
+  bucket       = aws_s3_bucket.this.id
+  key          = "health.html"
+  source       = "${path.module}/health.html"
+  etag         = filemd5("${path.module}/health.html")
+  content_type = "text/html"
+}

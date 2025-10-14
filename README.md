@@ -106,6 +106,56 @@ terraform apply -auto-approve
 
 Record the `state_bucket` and `lock_table` outputs, then update the backend configuration in both `stateful/backend.tf` and `stateless/backend.tf`.
 
+### Configure S3 backend via environment variables (recommended)
+
+Instead of hardcoding backend values in `backend.tf`, you can configure the S3 backend using environment variables and pass them to `terraform init`. This pulls the bucket and table names from the `global/bootstrap_state` outputs and lets you set the environment to be used in the backend key.
+
+```bash
+# Variables
+ENV="dev"            # change to your environment name
+
+# Fetch backend values from bootstrap outputs (ensure global tfvars are applied)
+BUCKET_NAME=$(terraform -chdir=global/bootstrap_state output -raw state_bucket)
+TABLE_NAME=$(terraform -chdir=global/bootstrap_state output -raw lock_table)
+REGION=$(terraform -chdir=global/bootstrap_state output -raw region)
+
+# Pass backend configuration to terraform init via TF_CLI_ARGS_init
+# This avoids storing backend secrets/values in backend.tf
+export TF_CLI_ARGS_init="\
+  -backend-config=bucket=${BUCKET_NAME} \
+  -backend-config=key=stateful/${ENV}/terraform.tfstate \
+  -backend-config=region=${REGION} \
+  -backend-config=dynamodb_table=${TABLE_NAME} \
+  -backend-config=encrypt=true"
+
+# Initialize stateful layer with the configured backend
+cd stateful
+terraform init -reconfigure
+
+# For the stateless layer, only the key path changes
+export TF_CLI_ARGS_init="\
+  -backend-config=bucket=${BUCKET_NAME} \
+  -backend-config=key=stateless/${ENV}/terraform.tfstate \
+  -backend-config=region=${REGION} \
+  -backend-config=dynamodb_table=${TABLE_NAME} \
+  -backend-config=encrypt=true"
+
+cd ../stateless
+terraform init -reconfigure
+```
+
+Notes:
+
+- You can commit `backend.tf` with an empty S3 backend block (no values) and rely on the environment-based init above. Example:
+
+  ```hcl
+  terraform {
+    backend "s3" {}
+  }
+  ```
+
+- To switch environments (e.g., `ENV=prod`), just re-export `ENV` and run `terraform init -reconfigure` again in the corresponding folder.
+
 ### 2) Deploy stateful layer
 
 ```bash

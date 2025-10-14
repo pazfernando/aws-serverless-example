@@ -6,7 +6,7 @@
         <collectionProp name="Arguments.arguments">
           <elementProp name="api-gateway" elementType="Argument">
             <stringProp name="Argument.name">api-gateway</stringProp>
-            <stringProp name="Argument.value">4czvtjo443.execute-api.us-east-1.amazonaws.com</stringProp>
+            <stringProp name="Argument.value">n625c3wxx2.execute-api.us-east-1.amazonaws.com</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="protocol" elementType="Argument">
